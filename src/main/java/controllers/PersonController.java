@@ -19,6 +19,7 @@ public class PersonController {
     @FXML private TextField emailField;
     @FXML private TextField birthDateField;
     @FXML private Label messageLabel;
+    @FXML private TextField deleteNicknameField;
 
     private final PersonDao personDao = new PersonDao();
 
@@ -54,10 +55,26 @@ public class PersonController {
         } else {
             StringBuilder sb = new StringBuilder("Liste des personnes :\n");
             for (Person p : people) {
-                sb.append(p.getFirstName()).append(" ").append(p.getLastName()).append("\n");
+                sb.append(p.getFirstName()).append(" ").append(p.getLastName()).append(" ").append(p.getNickname()).append("\n");
             }
             messageLabel.setText(sb.toString());
         }
+    }
+    
+    @FXML
+    private void handleDeletePerson() {
+        String nickname = deleteNicknameField.getText().trim();
+        
+
+        if (nickname.isEmpty()) {
+            messageLabel.setText("Surnom obligatoire pour supprimer !");
+            return;
+        }else {
+        	personDao.deletePerson(nickname);
+        	messageLabel.setText("Personne avec ce surnom supprimé avec succès!");
+        }
+
+        
     }
 
     @FXML
@@ -70,5 +87,10 @@ public class PersonController {
         emailField.clear();
         birthDateField.clear();
         messageLabel.setText("");
+    }
+
+    @FXML
+    private void handleCancel2() {
+        deleteNicknameField.clear();
     }
 }

@@ -11,7 +11,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/person_form.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        primaryStage.setTitle("JavaFX Application");
+        primaryStage.setTitle("Contacts");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
