@@ -41,7 +41,7 @@ public class App extends Application {
 		stage.show();
 		// This is also new for this PW : you have to call the default view you want to
 		// see when the application launches
-		App.showView("QuestionsAdmin");
+		App.showView("PersonLayout");
 	}
 
 	// Here is the real game changer: let's change Parent with something more, let's
@@ -53,7 +53,7 @@ public class App extends Application {
 	private static <T> T loadFXML(String fxml) throws IOException {
 		// As we will use this method a lot, and we have all our view in a specific
 		// package, let's put it there to save some typing :)
-		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/app/quiz/view/" + fxml + ".fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/app/view/" + fxml + ".fxml"));
 		return fxmlLoader.load();
 	}
 

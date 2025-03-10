@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.collections.ObservableList;
 
-public class QuestionsAdminController {
+public class PersonController {
 
     @FXML
     private TableView<Person> personTable;
