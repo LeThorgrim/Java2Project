@@ -103,8 +103,17 @@ public class QuestionsAdminController {
             refreshList();
 
             System.out.println(currentPerson.getId() + " updated."); //debug
-        } else {
-            System.out.println("Nobody selected."); //debug
+        } else { //meaning we are creating a new person
+            currentPerson = new Person(lastNameField.getText(), firstNameField.getText(),
+                    nicknameField.getText(), phoneField.getText(), addressField.getText(),
+                    emailField.getText(),birthField.getText());
+            //PersonService handle the addition
+            PersonService.addPerson(currentPerson);
+            System.out.println(currentPerson.getId() + " added."); //debug
+
+            refreshList();
+            formPane.setVisible(false); //hide the form as we deleted the person
+            currentPerson = null; //update
         }
     }
 
@@ -112,7 +121,7 @@ public class QuestionsAdminController {
     public void handleDeleteButton(ActionEvent actionEvent) {
         if (currentPerson != null) { //if a person is selected
             // alert for the deletion
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + currentPerson.getFirstName() + " ?",
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + currentPerson.getId() + " ?",
                     ButtonType.YES, ButtonType.NO); //yes/no confirmation box
             alert.setTitle("Deletion confirmation"); // title
             alert.setHeaderText(null); // no header
@@ -134,6 +143,23 @@ public class QuestionsAdminController {
     }
 
     //show the form to add a new person
+    // Show the form to add a new person
     public void handleNewButton(ActionEvent actionEvent) {
+        // Show the form in case we have no person selected
+        formPane.setVisible(true);
+        // Clear all input fields in case we were editing a person
+        lastNameField.clear();
+        firstNameField.clear();
+        nicknameField.clear();
+        phoneField.clear();
+        addressField.clear();
+        emailField.clear();
+        birthField.clear();
+
+        // Reset currentPerson (important to differentiate new entry from edit)
+        currentPerson = null;
+
+        System.out.println("Forms opened.");//debug
     }
+
 }

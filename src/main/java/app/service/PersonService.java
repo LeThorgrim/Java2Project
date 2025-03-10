@@ -7,7 +7,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PersonService {
 
@@ -26,8 +28,44 @@ public class PersonService {
     }
 
     public static void addPerson(Person person) {
-        PersonService.PersonServiceHolder.INSTANCE.persons.add(person);
+        if (person == null) {//shouldnt happen but just in case
+            System.out.println("currentperson null");
+            return;
+        }
+        //add to db
+        try {
+            String query = "INSERT INTO person (lastName, firstName, nickname, phone_number, address, email_address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, person.getLastName());
+            stmt.setString(2, person.getFirstName());
+            stmt.setString(3, person.getNickname());
+            stmt.setString(4, person.getPhoneNumber());
+            stmt.setString(5, person.getAddress());
+            stmt.setString(6, person.getEmailAddress());
+            stmt.setString(7, person.getBirthDate());
+
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                // Get the generated ID
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    person.setId(rs.getInt(1)); // Set the new ID
+                }
+                rs.close();
+            } else {
+                System.out.println("Error in addPerson db");
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+        // add to ObservableList
+        ObservableList<Person> persons = getPersons();
+        persons.add(person);
     }
+
 
     //update a person in the list and in the db
     public static void updatePerson(Person currentPerson) {
