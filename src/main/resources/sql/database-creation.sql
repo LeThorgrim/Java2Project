@@ -7,4 +7,3 @@ CREATE TABLE IF NOT EXISTS person (
     address VARCHAR(200) NULL,
     email_address VARCHAR(150) NULL,
     birth_date DATE NULL);
-   )

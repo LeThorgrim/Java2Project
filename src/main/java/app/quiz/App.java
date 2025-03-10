@@ -1,7 +1,11 @@
 package app.quiz;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import app.db.daos.DataSourceFactory;
 import app.db.daos.DatabaseManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +31,10 @@ public class App extends Application {
 	//tbf I wanted to remove the navbar without breaking the code, so I just commented most of its fxml
 	@Override
 	public void start(Stage stage) throws IOException {
-		// Nothing new here
+		//db
+		DatabaseManager.initializeDatabase();
+
+        // Nothing new here
 		stage.setTitle("Java2Project : Contact Manager");
 		// Load the main layout from file
 		mainlayout = loadFXML("MainLayout");

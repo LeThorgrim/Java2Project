@@ -23,15 +23,15 @@ public class DatabaseManager {
             String sqlScript = readSqlFile(SQL_FILE_PATH);
             stmt.executeUpdate(sqlScript);
             System.out.println("DB initialized");
+            //clear db
+            stmt.executeUpdate("DELETE FROM person"); // clear table
+            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name='person'"); // AUTO_INCREMENT renit
+            //we add 3 persons
+            stmt.executeUpdate("INSERT INTO person (lastname, firstname, nickname, phone_number, address, email_address, birth_date) VALUES " +
+                    "('Doe', 'John', 'Johnny', '123456789', '123 Street', 'john.doe@email.com', '1990-01-01'), " +
+                    "('Smith', 'Alice', 'Ali', '987654321', '456 Avenue', 'alice.smith@email.com', '1992-05-10'), " +
+                    "('Brown', 'Charlie', 'Chuck', '111222333', '789 Boulevard', 'charlie.brown@email.com', '1985-09-23');");
 
-            //insert our 'default persons'
-            String insertPersons = """
-            INSERT INTO person (lastname, firstname, nickname, phone_number, address, email_address, birth_date)
-            VALUES
-                ('Doe', 'John', 'Johnny', '123456789', '123 Test St', 'john.doe@example.com', '1990-05-15');
-        """;
-            stmt.executeUpdate(insertPersons);
-            System.out.println("Default 3 persons inserted");
 
         } catch (SQLException | IOException e) {
             System.err.println("Error when initialized: : " + e.getMessage());
