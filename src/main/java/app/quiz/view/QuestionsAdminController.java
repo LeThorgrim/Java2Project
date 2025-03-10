@@ -37,16 +37,13 @@ public class QuestionsAdminController {
     @FXML
     private TextField BirthField;
 
+    //buttons
     @FXML
     private RadioButton radio1;
-
     @FXML
     private RadioButton radio2;
-
     @FXML
     private RadioButton radio3;
-
-    private Question currentQuestion;
 
     @FXML
     public void initialize() {

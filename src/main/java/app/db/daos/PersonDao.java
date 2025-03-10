@@ -12,14 +12,16 @@ import java.sql.PreparedStatement;
 
 public class PersonDao {
 
+    //retrieve every person from the db
     public List<Person> listPersons() {
         List<Person> listOfPersons = new ArrayList<>();
-
+        //connection using our "wrapper" of datasourcefactory
         try (Connection connection = DatabaseManager.getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                try (ResultSet results = statement.executeQuery("SELECT * FROM person")) {
-                    while (results.next()) {
+                try (ResultSet results = statement.executeQuery("SELECT * FROM person")) { //sql query
+                    while (results.next()) { //results
                         Person person = new Person(
+                                results.getInt("idperson"),
                                 results.getString("lastname"),
                                 results.getString("firstname"),
                                 results.getString("nickname"),
@@ -39,10 +41,11 @@ public class PersonDao {
     }
 
     public void addPerson(Person person) {
+        //connection using our "wrapper" of datasourcefactory
         try (Connection connection = DatabaseManager.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO person (lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+                            "VALUES (?, ?, ?, ?, ?, ?, ?)")) { //query
                 statement.setString(1, person.getLastName());
                 statement.setString(2, person.getFirstName());
                 statement.setString(3, person.getNickname());
@@ -52,7 +55,7 @@ public class PersonDao {
                 statement.setString(7, person.getBirthDate());
 
                 statement.executeUpdate();
-                System.out.println("Nouvelle personne ajoutée avec succès.");
+                System.out.println("New person added."); //debug
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,18 +63,20 @@ public class PersonDao {
     }
 
     public void deletePerson(int id) {
+        //connection using our "wrapper" of datasourcefactory
         try (Connection connection = DatabaseManager.getConnection()) {
             try (PreparedStatement statement =
                          connection.prepareStatement("DELETE FROM person WHERE idperson = ?")) {
                 statement.setInt(1, id);
                 statement.executeUpdate();
-                System.out.println("Personne avec l'ID " + id + " supprimée avec succès.");
+                System.out.println("person id: " + id + " deleted."); //debug
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    //need some changes (using id) (comments & translate)
     public void updatePerson(String nickname, String lastname, String firstname,
                              String phoneNumber, String address, String email, String birthDate) {
         try (Connection connection = DatabaseManager.getConnection()) {

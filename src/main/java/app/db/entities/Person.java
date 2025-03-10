@@ -13,7 +13,7 @@ public class Person {
     private String emailAddress;
     private String birthDate;
 
-    // Constructeurs
+    // Constructors
     public Person() {}
 
     public Person(String lastName, String firstName, String nickname,
@@ -39,7 +39,7 @@ public class Person {
         this.birthDate = birthDate;
     }
 
-    // Getters et Setters
+    // Getters & Setters
     public String getLastName() {return lastName;}
     public void setLastName(String lastName) {this.lastName = lastName;}
 
