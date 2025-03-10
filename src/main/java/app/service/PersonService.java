@@ -2,8 +2,6 @@ package app.service;
 
 import app.db.daos.PersonDao;
 import app.db.entities.Person;
-import app.quiz.model.Question;
-import app.quiz.service.QuestionService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

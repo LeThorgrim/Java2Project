@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import app.quiz.model.Question;
 import javafx.collections.ObservableList;
 
 public class QuestionsAdminController {
