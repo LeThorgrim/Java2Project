@@ -10,16 +10,16 @@ import java.sql.Statement;
 import java.util.List;
 import java.sql.PreparedStatement;
 
+// DAO only interacts with the database
 public class PersonDao {
 
-    //retrieve every person from the db
+    //retrieve all data
     public List<Person> listPersons() {
         List<Person> listOfPersons = new ArrayList<>();
-        //connection using our "wrapper" of datasourcefactory
-        try (Connection connection = DatabaseManager.getConnection()) {
+        try (Connection connection = DatabaseManager.getConnection()) { //connection
             try (Statement statement = connection.createStatement()) {
-                try (ResultSet results = statement.executeQuery("SELECT * FROM person")) { //sql query
-                    while (results.next()) { //results
+                try (ResultSet results = statement.executeQuery("SELECT * FROM person")) { // query
+                    while (results.next()) {
                         Person person = new Person(
                                 results.getInt("idperson"),
                                 results.getString("lastname"),
@@ -40,12 +40,14 @@ public class PersonDao {
         return listOfPersons;
     }
 
+    //add new data
     public void addPerson(Person person) {
-        //connection using our "wrapper" of datasourcefactory
-        try (Connection connection = DatabaseManager.getConnection()) {
+        try (Connection connection = DatabaseManager.getConnection()) { //connection
+            // query
             try (PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO person (lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?)")) { //query
+                            "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+
                 statement.setString(1, person.getLastName());
                 statement.setString(2, person.getFirstName());
                 statement.setString(3, person.getNickname());
@@ -54,48 +56,60 @@ public class PersonDao {
                 statement.setString(6, person.getEmailAddress());
                 statement.setString(7, person.getBirthDate());
 
-                statement.executeUpdate();
-                System.out.println("New person added."); //debug
+                int rowsInserted = statement.executeUpdate();
+
+                // gets the generated db ID
+                if (rowsInserted > 0) {
+                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            person.setId(generatedKeys.getInt(1));
+                        }
+                    }
+                }
+                System.out.println("New person added with ID: " + person.getId()); // Debug
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    //delete data
     public void deletePerson(int id) {
-        //connection using our "wrapper" of datasourcefactory
-        try (Connection connection = DatabaseManager.getConnection()) {
+        try (Connection connection = DatabaseManager.getConnection()) { //connection
+            // query
             try (PreparedStatement statement =
                          connection.prepareStatement("DELETE FROM person WHERE idperson = ?")) {
-                statement.setInt(1, id);
-                statement.executeUpdate();
-                System.out.println("person id: " + id + " deleted."); //debug
+                statement.setInt(1, id); //arg '?' 1 = id
+                statement.executeUpdate(); //execute
+                System.out.println("Person with ID " + id + " deleted.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    //need some changes (using id) (comments & translate)
-    public void updatePerson(String nickname, String lastname, String firstname,
+    //update data
+    public void updatePerson(int id, String nickname, String lastname, String firstname,
                              String phoneNumber, String address, String email, String birthDate) {
-        try (Connection connection = DatabaseManager.getConnection()) {
+        try (Connection connection = DatabaseManager.getConnection()) { //connection
+            // query
             try (PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE person SET lastname = ?, firstname = ?, phone_number = ?, " +
-                            "address = ?, email_address = ?, birth_date = ? WHERE nickname = ?")) {
-                statement.setString(1, lastname);
-                statement.setString(2, firstname);
-                statement.setString(3, phoneNumber);
-                statement.setString(4, address);
-                statement.setString(5, email);
-                statement.setString(6, birthDate);
-                statement.setString(7, nickname);
+                    "UPDATE person SET lastname = ?, firstname = ?, nickname = ?, phone_number = ?, " +
+                            "address = ?, email_address = ?, birth_date = ? WHERE idperson = ?")) {
+                statement.setString(1, lastname); //arg '?' 1 = id
+                statement.setString(2, firstname); //arg '?' 2 = id
+                statement.setString(3, nickname); //...
+                statement.setString(4, phoneNumber);
+                statement.setString(5, address);
+                statement.setString(6, email);
+                statement.setString(7, birthDate);
+                statement.setInt(8, id);
 
-                int rowsUpdated = statement.executeUpdate();
-                if (rowsUpdated > 0) {
-                    System.out.println("Personne avec le surnom '" + nickname + "' mise à jour avec succès.");
-                } else {
-                    System.out.println("Aucune personne trouvée avec le surnom '" + nickname + "'.");
+                int rowsUpdated = statement.executeUpdate(); //execute
+                if (rowsUpdated > 0) { //if updated
+                    System.out.println("Person with ID " + id + " updated successfully.");
+                } else { //if not updated (should not happen)
+                    System.out.println("No person found with ID " + id + ".");
                 }
             }
         } catch (SQLException e) {
@@ -103,17 +117,18 @@ public class PersonDao {
         }
     }
 
+    //get data by nickname, which 'in retrospection' is not useful (that's why its commented)
+    /*
     public Person getPersonByNickname(String nickname) {
         Person person = null;
-
         try (Connection connection = DatabaseManager.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
                     "SELECT * FROM person WHERE nickname = ?")) {
                 statement.setString(1, nickname);
-
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         person = new Person(
+                                resultSet.getInt("idperson"),
                                 resultSet.getString("lastname"),
                                 resultSet.getString("firstname"),
                                 resultSet.getString("nickname"),
@@ -128,7 +143,7 @@ public class PersonDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return person;
     }
+    */
 }
