@@ -9,16 +9,20 @@ public class MainLayoutController {
 		Platform.exit();
 	}
 
+	/* Some things that I no longer need with the remove of navbar
 	public void gotoHome() {
 		Platform.runLater(() -> {
 			App.showView("HomeScreen");
 		});
 	}
+	*/
 
+	/*
 	public void gotoQuestionAdmin() {
 		Platform.runLater(() -> {
 			App.showView("QuestionsAdmin");
 		});
 	}
+	*/
 
 }

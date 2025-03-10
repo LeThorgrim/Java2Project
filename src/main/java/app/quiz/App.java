@@ -23,6 +23,7 @@ public class App extends Application {
 	// This will help us avoiding dodgy explicit casts
 	private static BorderPane mainlayout;
 
+	//tbf I wanted to remove the navbar without breaking the code, so I just commented most of its fxml
 	@Override
 	public void start(Stage stage) throws IOException {
 		// Nothing new here
