@@ -69,6 +69,7 @@ public class QuestionsAdminController {
         refreshList();
     }
 
+    // show the details of a person in the form when you click on it
     public void showQuestionDetails(Person personToShow){
         if (personToShow != null) {
             formPane.setVisible(true);
@@ -85,6 +86,7 @@ public class QuestionsAdminController {
         }
     }
 
+    //updates a person that you modified
     public void handleSaveButton(ActionEvent actionEvent) {
         if (currentPerson != null) {
             // take the new (or not) infos from the fields
@@ -106,9 +108,30 @@ public class QuestionsAdminController {
         }
     }
 
-
     public void handleDeleteButton(ActionEvent actionEvent) {
+        if (currentPerson != null) {
+            // alert for the deletion
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + currentPerson.getFirstName() + " ?",
+                    ButtonType.YES, ButtonType.NO); //yes/no confirmation box
+            alert.setTitle("Deletion confirmation"); // title
+            alert.setHeaderText(null); // no header
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) { //yes
+                    // deletion using PersonService
+                    PersonService.deletePerson(currentPerson);
+
+                    // Mise à jour de la liste
+                    refreshList();
+                    formPane.setVisible(false);
+                    currentPerson = null;
+                }
+            });
+        } else {
+            System.out.println("No person selected."); //debug
+        }
     }
+
 
     public void handleNewButton(ActionEvent actionEvent) {
     }

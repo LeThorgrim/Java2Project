@@ -29,6 +29,7 @@ public class PersonService {
         PersonService.PersonServiceHolder.INSTANCE.persons.add(person);
     }
 
+    //update a person in the list and in the db
     public static void updatePerson(Person currentPerson) {
         if (currentPerson == null) {
             System.out.println("currentPerson null"); //debug
@@ -54,6 +55,34 @@ public class PersonService {
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Person Updated."); //debug
+            } else { //debug purpose, shouldnt happen
+                System.out.println("Person not found.");
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //delete a person in the list and in the db
+    public static void deletePerson(Person currentPerson) {
+        if (currentPerson == null) {
+            System.out.println("currentPerson null"); //debug
+            return;
+        }
+        //personsList delete
+        ObservableList<Person> persons = getPersons();
+        persons.remove(currentPerson);
+
+        // db update
+        try {
+            String query = "DELETE FROM person WHERE idperson=?";
+            PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(query);
+            stmt.setInt(1, currentPerson.getId());
+
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Person deleted."); //debug
             } else { //debug purpose, shouldnt happen
                 System.out.println("Person not found.");
             }
