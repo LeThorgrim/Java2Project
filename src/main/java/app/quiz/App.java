@@ -2,6 +2,7 @@ package app.quiz;
 
 import java.io.IOException;
 
+import app.db.daos.DatabaseManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

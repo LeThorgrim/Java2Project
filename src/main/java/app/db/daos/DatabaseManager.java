@@ -19,9 +19,20 @@ public class DatabaseManager {
     public static void initializeDatabase() {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
+            //sql file loader
             String sqlScript = readSqlFile(SQL_FILE_PATH);
             stmt.executeUpdate(sqlScript);
             System.out.println("DB initialized");
+
+            //insert our 'default persons'
+            String insertPersons = """
+            INSERT INTO person (lastname, firstname, nickname, phone_number, address, email_address, birth_date)
+            VALUES
+                ('Doe', 'John', 'Johnny', '123456789', '123 Test St', 'john.doe@example.com', '1990-05-15');
+        """;
+            stmt.executeUpdate(insertPersons);
+            System.out.println("Default 3 persons inserted");
+
         } catch (SQLException | IOException e) {
             System.err.println("Error when initialized: : " + e.getMessage());
         }
