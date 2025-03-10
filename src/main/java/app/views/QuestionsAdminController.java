@@ -108,8 +108,9 @@ public class QuestionsAdminController {
         }
     }
 
+    //delete a person
     public void handleDeleteButton(ActionEvent actionEvent) {
-        if (currentPerson != null) {
+        if (currentPerson != null) { //if a person is selected
             // alert for the deletion
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + currentPerson.getFirstName() + " ?",
                     ButtonType.YES, ButtonType.NO); //yes/no confirmation box
@@ -123,8 +124,8 @@ public class QuestionsAdminController {
 
                     // Mise à jour de la liste
                     refreshList();
-                    formPane.setVisible(false);
-                    currentPerson = null;
+                    formPane.setVisible(false); //hide the form as we deleted the person
+                    currentPerson = null; //update
                 }
             });
         } else {
@@ -132,7 +133,7 @@ public class QuestionsAdminController {
         }
     }
 
-
+    //show the form to add a new person
     public void handleNewButton(ActionEvent actionEvent) {
     }
 }
