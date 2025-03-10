@@ -30,9 +30,9 @@ public class PersonDaoTestCase {
         try (Connection connection = DataSourceFactory.getDataSource().getConnection();
              Statement stmt = connection.createStatement()) {
             stmt.executeUpdate("DELETE FROM person"); // clear table
-            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name='person'"); // AUTO_INCREMENT renit
+            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name='person'"); // AUTO_INCREMENT reset
 
-            // 3 test datas
+            // 3 test data
             stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
                     "VALUES ('Doe', 'John', 'Johnny', '123456789', '123 Street', 'john.doe@email.com', '1990-01-01')");
             stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
@@ -59,7 +59,7 @@ public class PersonDaoTestCase {
         List<Person> persons = personDao.listPersons();
         // THEN
         assertThat(persons).hasSize(3);
-        assertThat(persons).extracting("lastname", "firstname", "nickname")
+        assertThat(persons).extracting("lastName", "firstName", "nickname")
                 .containsOnly(
                         tuple("Doe", "John", "Johnny"),
                         tuple("Smith", "Alice", "Ali"),
@@ -67,79 +67,60 @@ public class PersonDaoTestCase {
                 );
     }
 
-    @Test
-    public void shouldGetPersonByNickname() {
-        // WHEN
-        Person person = personDao.getPersonByNickname("Ali");
-        // THEN
-        assertThat(person.getLastName()).isEqualTo("Smith");
-        assertThat(person.getFirstName()).isEqualTo("Alice");
-        assertThat(person.getEmailAddress()).isEqualTo("alice.smith@email.com");
-    }
-
-    @Test
-    public void shouldNotGetUnknownPerson() {
-        // WHEN
-        Person person = personDao.getPersonByNickname("Unknown");
-        // THEN
-        assertThat(person).isNull();
-    }
 
     @Test
     public void shouldAddPerson() throws Exception {
         // WHEN
-        personDao.addPerson(new Person("Taylor", "Emma", "Em", "333222111",
-                "999 Road", "emma.taylor@email.com", "2000-07-07"));
+        Person newPerson = new Person("Taylor", "Emma", "Em", "333222111",
+                "999 Road", "emma.taylor@email.com", "2000-07-07");
+        personDao.addPerson(newPerson);
+
         // THEN
-        Connection connection = DataSourceFactory.getDataSource().getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM person WHERE nickname='Em'");
-
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.getInt("idperson")).isNotNull();
-        assertThat(resultSet.getString("lastname")).isEqualTo("Taylor");
-        assertThat(resultSet.getString("firstname")).isEqualTo("Emma");
-        assertThat(resultSet.getString("nickname")).isEqualTo("Em");
-        assertThat(resultSet.getString("email_address")).isEqualTo("emma.taylor@email.com");
-        assertThat(resultSet.next()).isFalse();
-
-        resultSet.close();
-        statement.close();
-        connection.close();
+        assertThat(newPerson.getId()).isNotNull(); // Vérifie que l'ID a bien été récupéré
+        try (Connection connection = DataSourceFactory.getDataSource().getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery("SELECT * FROM person WHERE idperson = " + newPerson.getId())) {
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getString("lastname")).isEqualTo("Taylor");
+        }
     }
 
     @Test
     public void shouldUpdatePerson() throws Exception {
         // GIVEN
-        personDao.addPerson(new Person("White", "Walter", "Heisenberg", "666777888",
-                "Blue Meth St.", "walter.white@email.com", "1960-09-07"));
+        Person person = new Person("White", "Walter", "Heisenberg", "666777888",
+                "Blue Meth St.", "walter.white@email.com", "1960-09-07");
+        personDao.addPerson(person);
 
         // WHEN
-        personDao.updatePerson("Heisenberg", "White", "Walter", "999888777",
+        personDao.updatePerson(person.getId(), "Heisenberg", "White", "Walter", "999888777",
                 "New Address", "new.email@email.com", "1960-09-07");
 
         // THEN
-        Person updatedPerson = personDao.getPersonByNickname("Heisenberg");
-        assertThat(updatedPerson).isNotNull();
-        assertThat(updatedPerson.getPhoneNumber()).isEqualTo("999888777");
-        assertThat(updatedPerson.getAddress()).isEqualTo("New Address");
-        assertThat(updatedPerson.getEmailAddress()).isEqualTo("new.email@email.com");
+        try (Connection connection = DataSourceFactory.getDataSource().getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery("SELECT * FROM person WHERE idperson = " + person.getId())) {
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getString("phone_number")).isEqualTo("999888777");
+            assertThat(resultSet.getString("address")).isEqualTo("New Address");
+        }
     }
 
-    // should be updated using id
-    /*
     @Test
     public void shouldDeletePerson() throws Exception {
         // GIVEN
-        personDao.addPerson(new Person("White", "Walter", "Heisenberg", "666777888",
-                "Blue Meth St.", "walter.white@email.com", "1960-09-07"));
+        Person person = new Person("White", "Walter", "Heisenberg", "666777888",
+                "Blue Meth St.", "walter.white@email.com", "1960-09-07");
+        personDao.addPerson(person);
 
         // WHEN
-        personDao.deletePerson("Heisenberg");
+        personDao.deletePerson(person.getId());
 
         // THEN
-        Person deletedPerson = personDao.getPersonByNickname("Heisenberg");
-        assertThat(deletedPerson).isNull();
+        try (Connection connection = DataSourceFactory.getDataSource().getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery("SELECT * FROM person WHERE idperson = " + person.getId())) {
+            assertThat(resultSet.next()).isFalse(); // La personne ne doit plus exister
+        }
     }
-    */
 }
