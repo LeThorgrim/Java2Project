@@ -22,19 +22,19 @@ public class QuestionsAdminController {
 
     //fields
     @FXML
-    private TextField LastNameField;
+    private TextField lastNameField;
     @FXML
-    private TextField FirstNameField;
+    private TextField firstNameField;
     @FXML
-    private TextField NicknameField;
+    private TextField nicknameField;
     @FXML
-    private TextField PhoneField;
+    private TextField phoneField;
     @FXML
-    private TextField AddressField;
+    private TextField addressField;
     @FXML
-    private TextField EmailField;
+    private TextField emailField;
     @FXML
-    private TextField BirthField;
+    private TextField birthField;
 
     //buttons
     @FXML
@@ -44,10 +44,17 @@ public class QuestionsAdminController {
     @FXML
     private RadioButton radio3;
 
+    private Person currentPerson;
+
     @FXML
     public void initialize() {
         personColumn.setCellValueFactory(new PersonValueFactory());
         populateList();
+
+        // selection listener for TableView
+        personTable.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> showQuestionDetails(newValue)
+        );
     }
 
     public void refreshList() {
@@ -62,18 +69,21 @@ public class QuestionsAdminController {
         refreshList();
     }
 
-    /*public void showQuestionDetails(Question questionToShow){
-        if (questionToShow != null) {
+    public void showQuestionDetails(Person personToShow){
+        if (personToShow != null) {
             formPane.setVisible(true);
-            currentQuestion = questionToShow;
-            questionField.setText(currentQuestion.getQuestion());
-            answer1Field.setText(currentQuestion.getAnswer1().getAnswer());
-            answer2Field.setText(currentQuestion.getAnswer2().getAnswer());
-            answer3Field.setText(currentQuestion.getAnswer3().getAnswer());
+            currentPerson = personToShow;
+            lastNameField.setText(currentPerson.getLastName());
+            firstNameField.setText(currentPerson.getFirstName());
+            nicknameField.setText(currentPerson.getNickname());
+            phoneField.setText(currentPerson.getPhoneNumber());
+            addressField.setText(currentPerson.getAddress());
+            emailField.setText(currentPerson.getEmailAddress());
+            birthField.setText(currentPerson.getBirthDate());
         } else {
             formPane.setVisible(false);
         }
-    }*/
+    }
 
     public void handleSaveButton(ActionEvent actionEvent) {
     }

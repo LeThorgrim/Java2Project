@@ -32,13 +32,13 @@
                          <Label alignment="TOP_LEFT" layoutX="22.0" layoutY="267.0" text="Birth" />
                          <Button mnemonicParsing="false" onAction="#handleSaveButton" text="Save" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="70.0" />
                          <Button mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                         <TextField fx:id="LastNameField" layoutX="75.0" layoutY="64.0" prefHeight="26.0" prefWidth="298.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
-                         <TextField fx:id="FirstNameField" layoutX="75.0" layoutY="19.0" prefHeight="26.0" prefWidth="298.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
-                         <TextField fx:id="NicknameField" layoutX="75.0" layoutY="106.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
-                         <TextField fx:id="PhoneField" layoutX="75.0" layoutY="190.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
-                         <TextField fx:id="AdressField" layoutX="74.0" layoutY="147.0" prefHeight="26.0" prefWidth="298.0" />
-                         <TextField fx:id="EmailField" layoutX="74.0" layoutY="224.0" prefHeight="26.0" prefWidth="298.0" />
-                         <TextField fx:id="BirthField" layoutX="74.0" layoutY="262.0" prefHeight="26.0" prefWidth="298.0" />
+                         <TextField fx:id="lastNameField" layoutX="75.0" layoutY="64.0" prefHeight="26.0" prefWidth="298.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
+                         <TextField fx:id="firstNameField" layoutX="75.0" layoutY="19.0" prefHeight="26.0" prefWidth="298.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
+                         <TextField fx:id="nicknameField" layoutX="75.0" layoutY="106.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
+                         <TextField fx:id="phoneField" layoutX="75.0" layoutY="190.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="45.0" />
+                         <TextField fx:id="addressField" layoutX="74.0" layoutY="147.0" prefHeight="26.0" prefWidth="298.0" />
+                         <TextField fx:id="emailField" layoutX="74.0" layoutY="224.0" prefHeight="26.0" prefWidth="298.0" />
+                         <TextField fx:id="birthField" layoutX="74.0" layoutY="262.0" prefHeight="26.0" prefWidth="298.0" />
                      </children>
                   </AnchorPane>
                   <Button layoutX="219.0" layoutY="296.0" mnemonicParsing="false" onAction="#handleNewButton" text="New" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
