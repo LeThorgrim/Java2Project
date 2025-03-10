@@ -86,7 +86,26 @@ public class QuestionsAdminController {
     }
 
     public void handleSaveButton(ActionEvent actionEvent) {
+        if (currentPerson != null) {
+            // take the new (or not) infos from the fields
+            currentPerson.setLastName(lastNameField.getText());
+            currentPerson.setFirstName(firstNameField.getText());
+            currentPerson.setNickname(nicknameField.getText());
+            currentPerson.setPhoneNumber(phoneField.getText());
+            currentPerson.setAddress(addressField.getText());
+            currentPerson.setEmailAddress(emailField.getText());
+            currentPerson.setBirthDate(birthField.getText());
+            // save and send to db
+            PersonService.updatePerson(currentPerson);
+            // refresh
+            refreshList();
+
+            System.out.println(currentPerson.getId() + " updated."); //debug
+        } else {
+            System.out.println("Nobody selected."); //debug
+        }
     }
+
 
     public void handleDeleteButton(ActionEvent actionEvent) {
     }
