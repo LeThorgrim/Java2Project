@@ -11,6 +11,7 @@ import java.util.List;
 import app.db.daos.DataSourceFactory;
 import app.db.daos.DatabaseManager;
 import app.db.daos.PersonDao;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,17 @@ public class PersonDaoTestCase {
                     "VALUES ('Smith', 'Alice', 'Ali', '987654321', '456 Avenue', 'alice.smith@email.com', '1995-05-05')");
             stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
                     "VALUES ('Brown', 'Bob', 'Bobby', '555444333', '789 Boulevard', 'bob.brown@email.com', '1988-12-12')");
+        }
+    }
+
+    @AfterEach
+    void resetDatabase() { // clear table after each test
+        try (Connection connection = DataSourceFactory.getDataSource().getConnection();
+             Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate("DELETE FROM person;");  // delete every row
+            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name='person';"); // re-init auto-incr
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
