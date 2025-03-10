@@ -1,14 +1,13 @@
 package app.quiz.view;
 
 import app.db.entities.Person;
-import app.quiz.util.QuestionValueFactory;
+import app.quiz.util.PersonValueFactory;
 import app.service.PersonService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import app.quiz.model.Question;
-import app.quiz.service.QuestionService;
 import javafx.collections.ObservableList;
 
 public class QuestionsAdminController {
@@ -17,7 +16,7 @@ public class QuestionsAdminController {
     private TableView<Person> personTable;
 
     @FXML
-    private TableColumn<Question, String> questionColumn;
+    private TableColumn<Person, String> personColumn;
 
     @FXML
     private Pane formPane;
@@ -51,7 +50,7 @@ public class QuestionsAdminController {
 
     @FXML
     public void initialize() {
-        questionColumn.setCellValueFactory(new QuestionValueFactory());
+        personColumn.setCellValueFactory(new PersonValueFactory());
         populateList();
     }
 
