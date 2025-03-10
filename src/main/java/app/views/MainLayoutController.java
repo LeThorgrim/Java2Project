@@ -1,6 +1,5 @@
-package app.quiz.view;
+package app.views;
 
-import app.quiz.App;
 import javafx.application.Platform;
 
 public class MainLayoutController {

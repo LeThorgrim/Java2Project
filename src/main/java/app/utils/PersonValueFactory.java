@@ -1,4 +1,4 @@
-package app.quiz.util;
+package app.utils;
 
 import app.db.entities.Person;
 import javafx.beans.property.SimpleStringProperty;

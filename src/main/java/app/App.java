@@ -1,11 +1,7 @@
-package app.quiz;
+package app;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import app.db.daos.DataSourceFactory;
 import app.db.daos.DatabaseManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

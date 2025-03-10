@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="450.0" prefWidth="600.0" stylesheets="@quiz.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.quiz.view.MainLayoutController">
+<BorderPane prefHeight="450.0" prefWidth="600.0" stylesheets="@quiz.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.views.MainLayoutController">
 	<!--<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>

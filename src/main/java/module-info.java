@@ -4,7 +4,8 @@ module app {
     requires java.sql;
     requires sqlite.jdbc;
 
-    opens app.quiz to javafx.fxml;
+    opens app to javafx.fxml;
     opens app.quiz.view to javafx.fxml;
-    exports app.quiz;
+    exports app;
+    opens app.views to javafx.fxml;
 }

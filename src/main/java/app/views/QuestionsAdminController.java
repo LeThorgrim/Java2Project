@@ -1,7 +1,7 @@
-package app.quiz.view;
+package app.views;
 
 import app.db.entities.Person;
-import app.quiz.util.PersonValueFactory;
+import app.utils.PersonValueFactory;
 import app.service.PersonService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

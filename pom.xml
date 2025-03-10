@@ -67,7 +67,7 @@
 							<goal>jlink</goal>
 						</goals>
 						<configuration>
-							<mainClass>app.quiz.App</mainClass>
+							<mainClass>app.App</mainClass>
 							<launcher>${project.artifactId}</launcher>
 							<jlinkImageName>${project.artifactId}</jlinkImageName>
 							<jlinkZipName>${project.artifactId}-${project.version}</jlinkZipName>
