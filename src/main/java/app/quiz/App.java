@@ -26,7 +26,7 @@ public class App extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
 		// Nothing new here
-		stage.setTitle("The best Quizz in the Universe");
+		stage.setTitle("Java2Project : Contact Manager");
 		// Load the main layout from file
 		mainlayout = loadFXML("MainLayout");
 		// Back to normal, except we use our newly defined member. Seems cumbersome, but

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane prefHeight="450.0" prefWidth="600.0" stylesheets="@quiz.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.quiz.view.MainLayoutController">
-	<top>
+	<!--<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
@@ -14,8 +14,8 @@
 					<MenuItem mnemonicParsing="false" onAction="#gotoHome" text="Home" />
 					<SeparatorMenuItem mnemonicParsing="false" />
 						<MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close" />
-                  		
-						
+
+
 					</items>
 				</Menu>
 				<Menu mnemonicParsing="false" text="Administration">
@@ -25,5 +25,5 @@
 				</Menu>
 			</menus>
 		</MenuBar>
-	</top>
+	</top>!-->
 </BorderPane>
