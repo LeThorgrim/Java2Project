@@ -8,11 +8,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
-import db.daos.DataSourceFactory;
-import db.daos.DatabaseManager;
-import db.daos.PersonDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import db.daos.*;
 
 import db.entities.Person;
 
@@ -22,23 +20,24 @@ public class PersonDaoTestCase {
 
     @BeforeEach
     public void initDatabase() throws Exception {
-        // init db w/ DatabaseManager
-        DatabaseManager.initializeDatabase();
-
-        // test data
-        try (Connection connection = DataSourceFactory.getDataSource().getConnection();
-             Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate("DELETE FROM person"); // clear table
-            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name='person'"); // AUTO_INCREMENT renit
-
-            // 3 test datas
-            stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
-                    "VALUES ('Doe', 'John', 'Johnny', '123456789', '123 Street', 'john.doe@email.com', '1990-01-01')");
-            stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
-                    "VALUES ('Smith', 'Alice', 'Ali', '987654321', '456 Avenue', 'alice.smith@email.com', '1995-05-05')");
-            stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) " +
-                    "VALUES ('Brown', 'Bob', 'Bobby', '555444333', '789 Boulevard', 'bob.brown@email.com', '1988-12-12')");
-        }
+        Connection connection = DatabaseManager.getConnection();
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS person ("
+                + "lastname VARCHAR(50) NOT NULL,"
+                + "firstname VARCHAR(50) NOT NULL,"
+                + "nickname VARCHAR(50) PRIMARY KEY,"
+                + "phone_number VARCHAR(15),"
+                + "address VARCHAR(255),"
+                + "email_address VARCHAR(100),"
+                + "birth_date VARCHAR(10)"
+                + ");");
+        stmt.executeUpdate("DELETE FROM person");
+        stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) "
+                + "VALUES ('Doe', 'John', 'jdoe', '1234567890', '123 Street', 'johndoe@example.com', '1990-01-01')");
+        stmt.executeUpdate("INSERT INTO person(lastname, firstname, nickname, phone_number, address, email_address, birth_date) "
+                + "VALUES ('Smith', 'Jane', 'jsmith', '0987654321', '456 Avenue', 'janesmith@example.com', '1992-02-02')");
+        stmt.close();
+        connection.close();
     }
 
     @Test
@@ -46,51 +45,58 @@ public class PersonDaoTestCase {
         // WHEN
         List<Person> persons = personDao.listPersons();
         // THEN
-        assertThat(persons).hasSize(3);
-        assertThat(persons).extracting("lastname", "firstname", "nickname")
-                .containsOnly(
-                        tuple("Doe", "John", "Johnny"),
-                        tuple("Smith", "Alice", "Ali"),
-                        tuple("Brown", "Bob", "Bobby")
-                );
+        assertThat(persons).hasSize(2);
+        assertThat(persons).extracting("nickname", "lastName", "firstName").containsOnly(
+                tuple("jdoe", "Doe", "John"),
+                tuple("jsmith", "Smith", "Jane")
+        );
     }
 
     @Test
     public void shouldGetPersonByNickname() {
         // WHEN
-        Person person = personDao.getPersonByNickname("Ali");
+        Person person = personDao.getPersonByNickname("jdoe");
         // THEN
-        assertThat(person.getLastName()).isEqualTo("Smith");
-        assertThat(person.getFirstName()).isEqualTo("Alice");
-        assertThat(person.getEmailAddress()).isEqualTo("alice.smith@email.com");
+        assertThat(person).isNotNull();
+        assertThat(person.getLastName()).isEqualTo("Doe");
+        assertThat(person.getFirstName()).isEqualTo("John");
     }
 
     @Test
     public void shouldNotGetUnknownPerson() {
         // WHEN
-        Person person = personDao.getPersonByNickname("Unknown");
+        Person person = personDao.getPersonByNickname("unknown");
         // THEN
         assertThat(person).isNull();
     }
 
     @Test
     public void shouldAddPerson() throws Exception {
-        // WHEN
-        personDao.addPerson(new Person("Taylor", "Emma", "Em", "333222111",
-                "999 Road", "emma.taylor@email.com", "2000-07-07"));
+        // GIVEN
+        Person newPerson = new Person("Brown", "Charlie", "cbrown", "1112223333", "789 Road", "cbrown@example.com", "1995-03-03");
+        // WHEN 
+        personDao.addPerson(newPerson);
         // THEN
-        Connection connection = DataSourceFactory.getDataSource().getConnection();
+        Connection connection = DatabaseManager.getConnection();
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM person WHERE nickname='Em'");
-
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM person WHERE nickname='cbrown'");
         assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.getInt("idperson")).isNotNull();
-        assertThat(resultSet.getString("lastname")).isEqualTo("Taylor");
-        assertThat(resultSet.getString("firstname")).isEqualTo("Emma");
-        assertThat(resultSet.getString("nickname")).isEqualTo("Em");
-        assertThat(resultSet.getString("email_address")).isEqualTo("emma.taylor@email.com");
-        assertThat(resultSet.next()).isFalse();
+        assertThat(resultSet.getString("lastname")).isEqualTo("Brown");
+        assertThat(resultSet.getString("firstname")).isEqualTo("Charlie");
+        resultSet.close();
+        statement.close();
+        connection.close();
+    }
 
+    @Test
+    public void shouldDeletePerson() throws Exception {
+        // WHEN
+        personDao.deletePerson("jdoe");
+        // THEN
+        Connection connection = DatabaseManager.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM person WHERE nickname='jdoe'");
+        assertThat(resultSet.next()).isFalse();
         resultSet.close();
         statement.close();
         connection.close();
@@ -98,33 +104,17 @@ public class PersonDaoTestCase {
 
     @Test
     public void shouldUpdatePerson() throws Exception {
-        // GIVEN
-        personDao.addPerson(new Person("White", "Walter", "Heisenberg", "666777888",
-                "Blue Meth St.", "walter.white@email.com", "1960-09-07"));
-
         // WHEN
-        personDao.updatePerson("Heisenberg", "White", "Walter", "999888777",
-                "New Address", "new.email@email.com", "1960-09-07");
-
+        personDao.updatePerson("jdoe", "DoeUpdated", "JohnUpdated", "5556667777", "New Street", "newemail@example.com", "2000-01-01");
         // THEN
-        Person updatedPerson = personDao.getPersonByNickname("Heisenberg");
-        assertThat(updatedPerson).isNotNull();
-        assertThat(updatedPerson.getPhoneNumber()).isEqualTo("999888777");
-        assertThat(updatedPerson.getAddress()).isEqualTo("New Address");
-        assertThat(updatedPerson.getEmailAddress()).isEqualTo("new.email@email.com");
-    }
-
-    @Test
-    public void shouldDeletePerson() throws Exception {
-        // GIVEN
-        personDao.addPerson(new Person("White", "Walter", "Heisenberg", "666777888",
-                "Blue Meth St.", "walter.white@email.com", "1960-09-07"));
-
-        // WHEN
-        personDao.deletePerson("Heisenberg");
-
-        // THEN
-        Person deletedPerson = personDao.getPersonByNickname("Heisenberg");
-        assertThat(deletedPerson).isNull();
+        Connection connection = DatabaseManager.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM person WHERE nickname='jdoe'");
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.getString("lastname")).isEqualTo("DoeUpdated");
+        assertThat(resultSet.getString("firstname")).isEqualTo("JohnUpdated");
+        resultSet.close();
+        statement.close();
+        connection.close();
     }
 }

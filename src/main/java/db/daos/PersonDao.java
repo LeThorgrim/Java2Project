@@ -71,32 +71,68 @@ public class PersonDao {
             e.printStackTrace();
         }
     }
-
     public void updatePerson(String nickname, String lastname, String firstname,
-                             String phoneNumber, String address, String email, String birthDate) {
-        try (Connection connection = DatabaseManager.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE person SET lastname = ?, firstname = ?, phone_number = ?, " +
-                            "address = ?, email_address = ?, birth_date = ? WHERE nickname = ?")) {
-                statement.setString(1, lastname);
-                statement.setString(2, firstname);
-                statement.setString(3, phoneNumber);
-                statement.setString(4, address);
-                statement.setString(5, email);
-                statement.setString(6, birthDate);
-                statement.setString(7, nickname);
+            String phoneNumber, String address, String email, String birthDate) {
+    			try (Connection connection = DatabaseManager.getConnection()) {
+// Vérifier si la personne existe
+    				Person existingPerson = getPersonByNickname(nickname);
+    				if (existingPerson == null) {
+    					System.out.println("Aucune personne trouvée avec le surnom '" + nickname + "'.");
+    					return;
+    					}
+// Construire la requête SQL dynamique
+    				String sql = "UPDATE person SET ";
+					List<String> fields = new ArrayList<>();
+					List<String> values = new ArrayList<>();
 
-                int rowsUpdated = statement.executeUpdate();
-                if (rowsUpdated > 0) {
-                    System.out.println("Personne avec le surnom '" + nickname + "' mise à jour avec succès.");
-                } else {
-                    System.out.println("Aucune personne trouvée avec le surnom '" + nickname + "'.");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+					if (!lastname.isEmpty()) {
+						fields.add("lastname = ?");
+						values.add(lastname);
+						}
+					if (!firstname.isEmpty()) {
+					fields.add("firstname = ?");
+					values.add(firstname);
+					}
+					if (!phoneNumber.isEmpty()) {
+					fields.add("phone_number = ?");
+					values.add(phoneNumber);
+					}
+					if (!address.isEmpty()) {
+					fields.add("address = ?");
+					values.add(address);
+					}
+					if (!email.isEmpty()) {
+					fields.add("email_address = ?");
+					values.add(email);
+					}
+					if (!birthDate.isEmpty()) {
+					fields.add("birth_date = ?");
+					values.add(birthDate);
+					}
+
+					if (fields.isEmpty()) {
+					System.out.println("Aucune mise à jour effectuée.");
+					return;
+					}
+
+					sql += String.join(", ", fields) + " WHERE nickname = ?";
+					try (PreparedStatement statement = connection.prepareStatement(sql)) {
+						for (int i = 0; i < values.size(); i++) {
+							statement.setString(i + 1, values.get(i));
+							}
+						statement.setString(values.size() + 1, nickname);
+						int rowsUpdated = statement.executeUpdate();
+						if (rowsUpdated > 0) {
+							System.out.println("Personne avec le surnom '" + nickname + "' mise à jour avec succès.");
+							} else {
+								System.out.println("Échec de la mise à jour.");
+								}
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+						}
+    			}
+
 
     public Person getPersonByNickname(String nickname) {
         Person person = null;
