@@ -1,0 +1,49 @@
+/* Appliquer un style de fond général */
+.goodAnswer {
+    -fx-background-color: #f4f4f4;
+}
+
+/* Styliser le SplitPane */
+.split-pane {
+    -fx-background-color: #e0e0e0;
+}
+
+/* TableView styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+}
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+/* Styliser les labels */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+/* Styliser les champs de texte */
+.text-field {
+    -fx-pref-height: 25px;
+    -fx-border-color: #bdbdbd;
+    -fx-border-radius: 5px;
+    -fx-padding: 3px;
+}
+
+.text-field:focused {
+    -fx-border-color: #1976D2;
+    -fx-border-width: 2px;
+}
+
+/* Styliser les boutons */
+.button {
+    -fx-background-color: #1976D2 !important;
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 15px;
+    -fx-border-radius: 5px;
+}
