@@ -1,0 +1,17 @@
+app\quiz\view\MainLayoutController.class
+app\quiz\service\QuestionService$QuestionServiceHolder.class
+app\quiz\view\QuestionsAdminController.class
+app\controllers\PersonController.class
+app\quiz\util\QuizChangeListener.class
+app\quiz\util\QuestionValueFactory.class
+app\quiz\view\HomeScreenController.class
+app\db\daos\DataSourceFactory.class
+app\quiz\App.class
+app\quiz\service\QuestionService.class
+module-info.class
+app\quiz\model\Question.class
+app\quiz\model\Answer.class
+app\quiz\view\QuizOverviewController.class
+app\db\daos\DatabaseManager.class
+app\db\entities\Person.class
+app\db\daos\PersonDao.class
